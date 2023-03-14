@@ -98,7 +98,52 @@ BEGIN
                     Canal_vendas
     FROM [GRP-08/22].[rafael_Queiroz_STAGE]
     ORDER BY ID_pedido 
+# Criação da Procedure 
+# Inserindo dados: Stage, Fato e dimensao
 
+CREATE PROCEDURE [GRP-08/22].[rafael_queiroz_procuderelab3] 
+AS 
+BEGIN
+-------LIMPANDO AS TABELAS DIM E FATO, toda vez que vc rodar não inserir dados por cima-----
+    TRUNCATE TABLE [GRP-08/22].[Rafael_Queiroz_Fato]
+    TRUNCATE TABLE [GRP-08/22].[Rafael_Queiroz_DIM_CanalVendas]
+    TRUNCATE TABLE [GRP-08/22].[Rafael_Queiroz_DIM_Paises]
+    TRUNCATE TABLE [GRP-08/22].[Rafael_Queiroz_DIM_Regioes]
+ -------INSERINDO DADOS NA TABELA FATO---------
+    INSERT INTO [GRP-08/22].[Rafael_Queiroz_Fato](
+			ID_pedido,
+            Tipo_item,
+            Prioridade_pedido,
+            Data_pedido,
+            Data_envio,
+            Unidades_vendidas,
+            Preco_unitario,
+            Custo_unitario,
+            Rendimento_total,
+            Custo_total,
+            Lucro_total,
+            Pais)
+    SELECT  ID_pedido,
+            Tipo_item,
+            Prioridade_pedido,
+            Data_pedido,
+            Data_envio,
+            Unidades_vendidas,
+            Preco_unitario,
+            Custo_unitario,
+            Rendimento_total,
+            Custo_total,
+            Lucro_total,
+            Pais
+    FROM [GRP-08/22].[rafael_Queiroz_STAGE] 
+ ----------INSERINDO DADOS NA DIM CANAL VENDAS-------
+    INSERT INTO [GRP-08/22].[Rafael_Queiroz_DIM_CanalVendas](
+                    Id_pedido,
+                    Canal_vendas)
+    SELECT DISTINCT Id_pedido,
+                    Canal_vendas
+    FROM [GRP-08/22].[rafael_Queiroz_STAGE]
+    ORDER BY ID_pedido 
 -------INSERINDO DADOS DIM PAISES------
     INSERT INTO [GRP-08/22].[Rafael_Queiroz_DIM_Paises](
                      Id_pedido,
@@ -107,7 +152,6 @@ BEGIN
                      Pais
     FROM [GRP-08/22].[rafael_Queiroz_STAGE]
     ORDER BY ID_pedido 
-    
     ------INSERINDO DADOS DIM REGIAO------
     INSERT INTO [GRP-08/22].[Rafael_Queiroz_DIM_Regioes](
                     Id_pedido,
